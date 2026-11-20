@@ -469,6 +469,7 @@
   var QIDS = ['q1', 'q2', 'q3', 'q4', 'q5'];
   var OPTIONAL = CONFIG.requireQ2Q4 ? [] : ['q2', 'q4'];
   var sending = false;
+  var sent = false;     // una vez enviada con éxito, no se puede volver a enviar desde esta página
 
   // Construye los botones 0 a 10 de cada pregunta
   QIDS.forEach(function (qid) {
@@ -601,7 +602,7 @@
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (sending) return;
+    if (sending || sent) return;
     hideAlert();
 
     if (!validate()) {
@@ -631,7 +632,8 @@
 
     fetch(CONFIG.webhookUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      // text/plain evita la consulta previa (preflight) del navegador y acorta la espera; n8n lo interpreta como JSON
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
       body: JSON.stringify(payload),
       signal: controller ? controller.signal : undefined
     }).then(function (res) {
@@ -660,6 +662,12 @@
   });
 
   function showThanks(nombre) {
+    // Bloqueo definitivo: botón y campos deshabilitados, y el formulario deja de poder enviarse
+    sent = true;
+    sending = false;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Encuesta enviada';
+    Array.prototype.forEach.call(form.elements, function (el) { el.disabled = true; });
     document.getElementById('survey').style.display = 'none';
     var first = nombre.split(' ')[0];
     document.getElementById('thanks-text').textContent =
