@@ -423,10 +423,12 @@
         </fieldset>
       </div>
 
-      <div class="card">
-        <label class="field-label" for="comentario"><span class="q-num">6.</span>¿Hay algo que te gustaría que mejoráramos en tu sitio web o en SACSPro, o alguna idea que quieras que consideremos?<span class="opt-tag">Opcional</span></label>
+      <div class="card" id="card-comentario">
+        <label class="field-label" for="comentario"><span class="q-num">6.</span>¿Hay algo que te gustaría que mejoráramos en tu sitio web o en SACSPro, o alguna idea que quieras que consideremos?<span class="opt-tag" id="comentario-opt">Opcional</span></label>
+        <p class="hint" id="comentario-hint">Si no tiene sugerencias por ahora, puede escribir «Sin comentarios».</p>
         <textarea id="comentario" name="comentario" maxlength="1500"></textarea>
         <p class="counter"><span id="counter">0</span> / 1500</p>
+        <p class="field-error">Escriba un comentario para poder enviar.</p>
       </div>
 
       <div class="hp" aria-hidden="true">
@@ -459,6 +461,7 @@
   var CONFIG = {
     webhookUrl: 'https://n8n.tresite.com/webhook/encuesta-sacspro-usuarios-2026',
     requireQ2Q4: true,    // Interruptor: true = preguntas 2 y 4 obligatorias (debe coincidir con n8n)
+    requireComment: true, // Interruptor: true = pregunta 6 (comentario) obligatoria (debe coincidir con n8n)
     minMs: 4000,          // Tiempo mínimo entre abrir la página y enviar
     timeoutMs: 20000
   };
@@ -498,6 +501,15 @@
     }
   });
 
+  // Pregunta 6: si es obligatoria se quita la etiqueta "Opcional"; si es opcional se quita la nota
+  if (CONFIG.requireComment) {
+    var optTag = document.getElementById('comentario-opt');
+    optTag.parentNode.removeChild(optTag);
+  } else {
+    var hintEl = document.getElementById('comentario-hint');
+    hintEl.parentNode.removeChild(hintEl);
+  }
+
   function val(qid) {
     var el = form.querySelector('input[name="' + qid + '"]:checked');
     return el ? parseInt(el.value, 10) : null;
@@ -514,10 +526,12 @@
 
   function updateProgress() {
     var required = ['nombre', 'medio'].concat(QIDS.filter(function (q) { return OPTIONAL.indexOf(q) === -1; }));
+    if (CONFIG.requireComment) required.push('comentario');
     var done = 0;
     required.forEach(function (k) {
       if (k === 'nombre') { if (document.getElementById('nombre').value.trim().length >= 2) done++; }
       else if (k === 'medio') { if (medioFinal()) done++; }
+      else if (k === 'comentario') { if (document.getElementById('comentario').value.trim().length >= 2) done++; }
       else if (val(k) !== null) done++;
     });
     var pct = Math.round(done * 100 / required.length);
@@ -588,6 +602,7 @@
       var card = document.querySelector('[data-q="' + qid + '"]');
       mark(card, OPTIONAL.indexOf(qid) === -1 && val(qid) === null);
     });
+    mark(document.getElementById('card-comentario'), CONFIG.requireComment && document.getElementById('comentario').value.trim().length < 2);
     if (firstBad) {
       firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return false;
