@@ -1,0 +1,6 @@
+# Este repositorio es público. No debe contener documentos internos.
+handoff*.md
+CLAUDE.md
+.claude/
+*.local
+.env*

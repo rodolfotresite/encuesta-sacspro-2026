@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encuesta de servicio a usuarios de SACS Pro | Tresite</title>
+<meta name="description" content="Encuesta breve de servicio de Tresite para usuarios de SACS Pro. Cinco calificaciones del 0 al 10 y una pregunta abierta. Toma aproximadamente un minuto.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#268989">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:site_name" content="Tresite">
+<meta property="og:title" content="Encuesta de servicio a usuarios de SACS Pro">
+<meta property="og:description" content="Cinco calificaciones del 0 al 10 y una pregunta abierta. Toma aproximadamente un minuto desde el celular.">
+<meta property="og:image" content="https://rodolfotresite.github.io/encuesta-sacspro-2026/assets/logo-tresite.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src https://n8n.tresite.com; base-uri 'none'; form-action 'none'">
+<link rel="icon" href="assets/logo-tresite.png" type="image/png">
+<style>
+  :root {
+    --tresite-light: #BFED3E;
+    --tresite-mid: #92C84C;
+    --tresite-dark: #268989;
+    --ink: #333;
+    --ink-soft: #666;
+    --line: #cfd8d3;
+    --bg: #f5f7f5;
+    --error: #b3261e;
+    --error-bg: #fdeceb;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: var(--bg);
+  }
+
+  .site-header {
+    background: #fff;
+    border-bottom: 1px solid #e5e5e5;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .site-header img { display: block; height: 48px; width: auto; }
+
+  .hero {
+    background: var(--tresite-dark);
+    color: #fff;
+    text-align: center;
+    padding: 32px 16px 56px;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--tresite-light);
+    color: #1a3a1a;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    margin: 0 0 10px;
+    font-size: 1.6rem;
+    line-height: 1.25;
+    font-weight: 800;
+  }
+  .hero h1 span { color: var(--tresite-light); }
+  .hero p {
+    margin: 0 auto;
+    max-width: 520px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255,255,255,.9);
+  }
+
+  main {
+    max-width: 680px;
+    margin: -32px auto 0;
+    padding: 0 16px 32px;
+  }
+
+  .progress {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  }
+  .progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--tresite-dark);
+    margin-bottom: 6px;
+  }
+  .progress-track {
+    height: 8px;
+    border-radius: 4px;
+    background: #e3ebe6;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 0;
+    background: var(--tresite-mid);
+    transition: width .25s ease;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  .card.invalid { outline: 2px solid var(--error); }
+
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  legend, .field-label {
+    display: block;
+    padding: 0;
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--tresite-dark);
+  }
+  .q-num { color: var(--ink-soft); font-weight: 700; margin-right: 4px; }
+  .opt-tag {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    background: #eef2ef;
+    padding: 2px 8px;
+    border-radius: 10px;
+    vertical-align: 2px;
+  }
+  .hint { margin: 0 0 12px; font-size: 13px; color: var(--ink-soft); }
+
+  input[type="text"], select, textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 16px;
+    color: var(--ink);
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 48px;
+  }
+  textarea { min-height: 110px; resize: vertical; }
+  input[type="text"]:focus, select:focus, textarea:focus {
+    outline: 3px solid var(--tresite-light);
+    border-color: var(--tresite-dark);
+  }
+  .field + .field { margin-top: 16px; }
+  .field-error { display: none; margin: 6px 0 0; font-size: 13px; font-weight: 700; color: var(--error); }
+  .invalid .field-error { display: block; }
+  #medio-otro-wrap { display: none; margin-top: 10px; }
+
+  .scale {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .scale input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .scale label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .12s, border-color .12s, color .12s;
+  }
+  .scale input:checked + label {
+    background: var(--tresite-dark);
+    border-color: var(--tresite-dark);
+    color: #fff;
+  }
+  .scale input:focus-visible + label { outline: 3px solid var(--tresite-light); outline-offset: 1px; }
+  .scale-ends {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .scale-ends span:last-child { text-align: right; }
+  .clear-btn {
+    display: none;
+    margin-top: 8px;
+    padding: 6px 0;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--tresite-dark);
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .clear-btn.show { display: inline-block; }
+
+  .counter { margin: 4px 0 0; font-size: 12px; color: var(--ink-soft); text-align: right; }
+
+  .privacy {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+    background: #f8f9f8;
+    border-left: 4px solid var(--tresite-mid);
+    border-radius: 8px;
+  }
+
+  .alert {
+    display: none;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--error);
+    background: var(--error-bg);
+    border: 1px solid #f0b8b4;
+    border-radius: 8px;
+  }
+  .alert.show { display: block; }
+
+  .btn-submit {
+    display: block;
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 24px;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 800;
+    color: #1a3a1a;
+    background: var(--tresite-light);
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-submit:hover { background: #d4ff45; }
+  .btn-submit:focus-visible { outline: 3px solid var(--tresite-dark); outline-offset: 2px; }
+  .btn-submit[disabled] { opacity: .65; cursor: wait; }
+
+  .thanks { display: none; text-align: center; padding: 36px 20px; }
+  .thanks.show { display: block; }
+  .thanks svg { width: 64px; height: 64px; }
+  .thanks h2 { margin: 14px 0 8px; font-size: 1.4rem; color: var(--tresite-dark); }
+  .thanks p { margin: 0 auto; max-width: 440px; color: var(--ink-soft); }
+
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  footer {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 16px 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  noscript .card { text-align: center; font-weight: 700; color: var(--error); }
+
+  @media (min-width: 560px) {
+    .hero { padding: 44px 24px 64px; }
+    .hero h1 { font-size: 2.1rem; }
+    .card { padding: 24px 24px; }
+    .scale { grid-template-columns: repeat(11, 1fr); gap: 6px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .progress-bar, .scale label { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <img src="assets/logo-tresite.png" alt="Tresite" width="114" height="48">
+</header>
+
+<section class="hero">
+  <span class="hero-badge">Encuesta de servicio</span>
+  <h1>Su opinión sobre <span>SACS&nbsp;Pro</span></h1>
+  <p>Cinco calificaciones del 0 al 10 y una pregunta abierta. Toma aproximadamente un minuto. Le agradecemos su apoyo.</p>
+</section>
+
+<main>
+  <noscript>
+    <div class="card">Para responder la encuesta es necesario activar JavaScript en su navegador.</div>
+  </noscript>
+
+  <div id="survey">
+    <div class="progress" aria-live="polite">
+      <div class="progress-text"><span id="progress-label">0 de 5 respuestas obligatorias</span><span id="progress-pct">0%</span></div>
+      <div class="progress-track"><div class="progress-bar" id="progress-bar"></div></div>
+    </div>
+
+    <form id="form" novalidate autocomplete="off">
+
+      <div class="card" id="card-datos">
+        <div class="field" id="f-nombre">
+          <label class="field-label" for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" name="nombre" maxlength="100" autocomplete="name" required>
+          <p class="field-error">Escriba su nombre.</p>
+        </div>
+        <div class="field" id="f-medio">
+          <label class="field-label" for="medio">Medio</label>
+          <select id="medio" name="medio" required>
+            <option value="">Seleccione su medio</option>
+            <option>Alianza de Medios</option>
+            <option>La Cadera de Eva</option>
+            <option>XEVT</option>
+            <option>La Voz</option>
+            <option>Medicina y Salud Pública (MSP)</option>
+            <option>El Porvenir</option>
+            <option>UDGtv</option>
+            <option>POSTA</option>
+            <option>Tus Buenas Noticias (TBN)</option>
+            <option>Ovaciones</option>
+            <option>Quinto Poder</option>
+            <option>Soy Referee</option>
+            <option>Atomix</option>
+            <option>Luz Noticias</option>
+            <option>Pulso San Luis</option>
+            <option>Expreso</option>
+            <option>El Mañana</option>
+            <option>Diario Libre</option>
+            <option>Diario Presente</option>
+            <option>Diario del Yaqui</option>
+            <option>Cuarto Poder</option>
+            <option value="__otro">Otro</option>
+          </select>
+          <div id="medio-otro-wrap">
+            <label class="field-label" for="medio-otro">Escriba el nombre de su medio</label>
+            <input type="text" id="medio-otro" maxlength="80">
+          </div>
+          <p class="field-error" id="medio-error">Seleccione su medio.</p>
+        </div>
+      </div>
+
+      <div class="card" data-q="q1">
+        <fieldset>
+          <legend><span class="q-num">1.</span>¿Qué tan rápido te respondemos por WhatsApp?</legend>
+          <div class="scale" role="radiogroup"></div>
+          <div class="scale-ends"><span>0 = Muy lento</span><span>10 = Muy rápido</span></div>
+          <p class="field-error">Seleccione una calificación.</p>
+        </fieldset>
+      </div>
+
+      <div class="card" data-q="q2">
+        <fieldset>
+          <legend><span class="q-num">2.</span>¿Qué tan satisfecho estás con la solución a las incidencias que nos reportas?<span class="opt-tag" data-opt>Opcional</span></legend>
+          <p class="hint" data-opt>Si no ha reportado incidencias, puede omitir esta pregunta.</p>
+          <div class="scale" role="radiogroup"></div>
+          <div class="scale-ends"><span>0 = Lo peor</span><span>10 = Lo mejor</span></div>
+          <button type="button" class="clear-btn">Quitar mi calificación</button>
+          <p class="field-error">Seleccione una calificación.</p>
+        </fieldset>
+      </div>
+
+      <div class="card" data-q="q3">
+        <fieldset>
+          <legend><span class="q-num">3.</span>¿Qué tan satisfecho estás con nuestro servicio en general?</legend>
+          <div class="scale" role="radiogroup"></div>
+          <div class="scale-ends"><span>0 = Lo peor</span><span>10 = Lo mejor</span></div>
+          <p class="field-error">Seleccione una calificación.</p>
+        </fieldset>
+      </div>
+
+      <div class="card" data-q="q4">
+        <fieldset>
+          <legend><span class="q-num">4.</span>¿Qué tan satisfecho estás con el funcionamiento de tu sitio web?<span class="opt-tag" data-opt>Opcional</span></legend>
+          <p class="hint" data-opt>Si no conoce el sitio web de su medio, puede omitir esta pregunta.</p>
+          <div class="scale" role="radiogroup"></div>
+          <div class="scale-ends"><span>0 = Lo peor</span><span>10 = Lo mejor</span></div>
+          <button type="button" class="clear-btn">Quitar mi calificación</button>
+          <p class="field-error">Seleccione una calificación.</p>
+        </fieldset>
+      </div>
+
+      <div class="card" data-q="q5">
+        <fieldset>
+          <legend><span class="q-num">5.</span>¿Cómo calificas el funcionamiento de SACSPro?</legend>
+          <div class="scale" role="radiogroup"></div>
+          <div class="scale-ends"><span>0 = Lo peor</span><span>10 = Lo mejor</span></div>
+          <p class="field-error">Seleccione una calificación.</p>
+        </fieldset>
+      </div>
+
+      <div class="card">
+        <label class="field-label" for="comentario"><span class="q-num">6.</span>¿Hay algo que te gustaría que mejoráramos en tu sitio web o en SACSPro, o alguna idea que quieras que consideremos?<span class="opt-tag">Opcional</span></label>
+        <textarea id="comentario" name="comentario" maxlength="1500"></textarea>
+        <p class="counter"><span id="counter">0</span> / 1500</p>
+      </div>
+
+      <div class="hp" aria-hidden="true">
+        <label for="website">No llene este campo</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <p class="privacy">Sus respuestas se usarán únicamente para evaluar y mejorar el servicio de Tresite y de SACS Pro. Solo registramos el nombre, el medio y sus respuestas.</p>
+
+      <div class="alert" id="alert" role="alert"></div>
+
+      <button type="submit" class="btn-submit" id="submit">Enviar respuestas</button>
+    </form>
+  </div>
+
+  <div class="card thanks" id="thanks" tabindex="-1">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#268989"/><path d="M19 33l9 9 17-19" fill="none" stroke="#BFED3E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h2>Gracias por su opinión</h2>
+    <p id="thanks-text">Sus respuestas fueron enviadas correctamente. Nos ayudan a mejorar el servicio. Ya puede cerrar esta página.</p>
+  </div>
+</main>
+
+<footer>Tresite &middot; SACS Pro</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // Configuración
+  var CONFIG = {
+    webhookUrl: 'https://n8n.tresite.com/webhook/encuesta-sacspro-usuarios-2026',
+    requireQ2Q4: false,   // Interruptor: true = preguntas 2 y 4 obligatorias (debe coincidir con n8n)
+    minMs: 4000,          // Tiempo mínimo entre abrir la página y enviar
+    timeoutMs: 20000
+  };
+
+  var openedAt = Date.now();
+  var form = document.getElementById('form');
+  var submitBtn = document.getElementById('submit');
+  var alertBox = document.getElementById('alert');
+  var QIDS = ['q1', 'q2', 'q3', 'q4', 'q5'];
+  var OPTIONAL = CONFIG.requireQ2Q4 ? [] : ['q2', 'q4'];
+  var sending = false;
+
+  // Construye los botones 0 a 10 de cada pregunta
+  QIDS.forEach(function (qid) {
+    var card = document.querySelector('[data-q="' + qid + '"]');
+    var scale = card.querySelector('.scale');
+    var legendText = card.querySelector('legend').firstChild.nextSibling.textContent;
+    scale.setAttribute('aria-label', legendText);
+    for (var i = 0; i <= 10; i++) {
+      var input = document.createElement('input');
+      input.type = 'radio';
+      input.name = qid;
+      input.id = qid + '-' + i;
+      input.value = String(i);
+      var label = document.createElement('label');
+      label.setAttribute('for', input.id);
+      label.textContent = String(i);
+      scale.appendChild(input);
+      scale.appendChild(label);
+    }
+    if (OPTIONAL.indexOf(qid) === -1) {
+      var tags = card.querySelectorAll('[data-opt]');
+      for (var t = 0; t < tags.length; t++) tags[t].parentNode.removeChild(tags[t]);
+      var clr = card.querySelector('.clear-btn');
+      if (clr) clr.parentNode.removeChild(clr);
+    }
+  });
+
+  function val(qid) {
+    var el = form.querySelector('input[name="' + qid + '"]:checked');
+    return el ? parseInt(el.value, 10) : null;
+  }
+
+  function medioFinal() {
+    var sel = document.getElementById('medio').value;
+    if (sel === '__otro') {
+      var otro = document.getElementById('medio-otro').value.trim();
+      return otro ? 'Otro: ' + otro : '';
+    }
+    return sel;
+  }
+
+  function updateProgress() {
+    var required = ['nombre', 'medio'].concat(QIDS.filter(function (q) { return OPTIONAL.indexOf(q) === -1; }));
+    var done = 0;
+    required.forEach(function (k) {
+      if (k === 'nombre') { if (document.getElementById('nombre').value.trim().length >= 2) done++; }
+      else if (k === 'medio') { if (medioFinal()) done++; }
+      else if (val(k) !== null) done++;
+    });
+    var pct = Math.round(done * 100 / required.length);
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = pct + '%';
+    document.getElementById('progress-label').textContent = done + ' de ' + required.length + ' respuestas obligatorias';
+  }
+
+  function updateClearButtons() {
+    OPTIONAL.forEach(function (qid) {
+      var btn = document.querySelector('[data-q="' + qid + '"] .clear-btn');
+      if (btn) btn.classList.toggle('show', val(qid) !== null);
+    });
+  }
+
+  function clearInvalid(el) {
+    var card = el.closest ? el.closest('.card, .field') : null;
+    if (card) card.classList.remove('invalid');
+  }
+
+  form.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.id === 'medio') {
+      document.getElementById('medio-otro-wrap').style.display = t.value === '__otro' ? 'block' : 'none';
+      if (t.value === '__otro') document.getElementById('medio-otro').focus();
+    }
+    clearInvalid(t);
+    updateClearButtons();
+    updateProgress();
+  });
+  form.addEventListener('input', function (e) {
+    var t = e.target;
+    if (t.id === 'comentario') document.getElementById('counter').textContent = t.value.length;
+    clearInvalid(t);
+    updateProgress();
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.clear-btn'), function (btn) {
+    btn.addEventListener('click', function () {
+      var qid = btn.closest('[data-q]').getAttribute('data-q');
+      var checked = form.querySelector('input[name="' + qid + '"]:checked');
+      if (checked) checked.checked = false;
+      updateClearButtons();
+    });
+  });
+
+  function showAlert(msg) {
+    alertBox.textContent = msg;
+    alertBox.classList.add('show');
+  }
+  function hideAlert() {
+    alertBox.textContent = '';
+    alertBox.classList.remove('show');
+  }
+
+  function validate() {
+    var firstBad = null;
+    function mark(el, bad) {
+      if (bad) { el.classList.add('invalid'); if (!firstBad) firstBad = el; }
+      else el.classList.remove('invalid');
+    }
+    mark(document.getElementById('f-nombre'), document.getElementById('nombre').value.trim().length < 2);
+    var medioBad = !medioFinal();
+    var medioMsg = document.getElementById('medio-error');
+    medioMsg.textContent = document.getElementById('medio').value === '__otro' ? 'Escriba el nombre de su medio.' : 'Seleccione su medio.';
+    mark(document.getElementById('f-medio'), medioBad);
+    QIDS.forEach(function (qid) {
+      var card = document.querySelector('[data-q="' + qid + '"]');
+      mark(card, OPTIONAL.indexOf(qid) === -1 && val(qid) === null);
+    });
+    if (firstBad) {
+      firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return false;
+    }
+    return true;
+  }
+
+  function setSending(on) {
+    sending = on;
+    submitBtn.disabled = on;
+    submitBtn.textContent = on ? 'Enviando…' : 'Enviar respuestas';
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (sending) return;
+    hideAlert();
+
+    if (!validate()) {
+      showAlert('Faltan datos por completar. Revise los campos marcados en rojo.');
+      return;
+    }
+
+    var elapsed = Date.now() - openedAt;
+    if (elapsed < CONFIG.minMs) {
+      showAlert('Por favor revise sus respuestas e inténtelo de nuevo en unos segundos.');
+      return;
+    }
+
+    var payload = {
+      nombre: document.getElementById('nombre').value.trim(),
+      medio: medioFinal(),
+      q1: val('q1'), q2: val('q2'), q3: val('q3'), q4: val('q4'), q5: val('q5'),
+      comentario: document.getElementById('comentario').value.trim(),
+      website: document.getElementById('website').value,
+      elapsedMs: elapsed
+    };
+
+    setSending(true);
+
+    var controller = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = setTimeout(function () { if (controller) controller.abort(); }, CONFIG.timeoutMs);
+
+    fetch(CONFIG.webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller ? controller.signal : undefined
+    }).then(function (res) {
+      return res.text().then(function (txt) {
+        var data = null;
+        try { data = JSON.parse(txt); } catch (err) { data = null; }
+        return { status: res.status, ok: res.ok, data: data };
+      });
+    }).then(function (r) {
+      clearTimeout(timer);
+      if (r.ok && r.data && r.data.ok === true) {
+        showThanks(payload.nombre);
+      } else if (r.status === 400 && r.data && r.data.error) {
+        setSending(false);
+        submitBtn.textContent = 'Reintentar envío';
+        showAlert(r.data.error);
+      } else {
+        throw new Error('respuesta no válida');
+      }
+    }).catch(function () {
+      clearTimeout(timer);
+      setSending(false);
+      submitBtn.textContent = 'Reintentar envío';
+      showAlert('No fue posible enviar sus respuestas. Revise su conexión e inténtelo de nuevo. Sus respuestas siguen en esta página.');
+    });
+  });
+
+  function showThanks(nombre) {
+    document.getElementById('survey').style.display = 'none';
+    var first = nombre.split(' ')[0];
+    document.getElementById('thanks-text').textContent =
+      'Gracias, ' + first + '. Sus respuestas fueron enviadas correctamente y nos ayudan a mejorar el servicio. Ya puede cerrar esta página.';
+    var t = document.getElementById('thanks');
+    t.classList.add('show');
+    t.focus();
+    window.scrollTo(0, 0);
+  }
+
+  updateProgress();
+})();
+</script>
+</body>
+</html>
